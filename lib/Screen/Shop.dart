@@ -16,3 +16,4 @@ class _ShopState extends State<Shop> with TickerProviderStateMixin {
     return Home();
   }
 }
+//TODO:where there is 'Get.to(()=>screen())' replace it Navigator.push

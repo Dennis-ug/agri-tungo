@@ -12,7 +12,7 @@ class SettingProvider {
   }
 
   String get email => _sharedPreferences.getString(EMAIL) ?? '';
-  String? get userId => _sharedPreferences.getString(SESSION_ID)?? '';
+  String? get userId => _sharedPreferences.getString(SESSION_ID) ?? '';
   String get firstName => _sharedPreferences.getString(FIRST_NAME) ?? '';
   String get lastName => _sharedPreferences.getString(LAST_NAME) ?? '';
   String get userName => _sharedPreferences.getString(USERNAME) ?? '';
@@ -95,13 +95,14 @@ class SettingProvider {
       BuildContext context) async {
     final waitList = <Future<void>>[];
     waitList.add(_sharedPreferences.setString(SESSION_ID, sessionid));
-    waitList.add(_sharedPreferences.setString(FIRST_NAME, firstname?? ''));
-    waitList.add(_sharedPreferences.setString(LAST_NAME, lastname??''));
-    waitList.add(_sharedPreferences.setString(ACCESS_TOKEN, accesstoken??''));
-    waitList.add(_sharedPreferences.setString(REFRESH_TOKEN, refreshtoken??''));
+    waitList.add(_sharedPreferences.setString(FIRST_NAME, firstname ?? ''));
+    waitList.add(_sharedPreferences.setString(LAST_NAME, lastname ?? ''));
+    waitList.add(_sharedPreferences.setString(ACCESS_TOKEN, accesstoken ?? ''));
+    waitList
+        .add(_sharedPreferences.setString(REFRESH_TOKEN, refreshtoken ?? ''));
     // waitList.add(_sharedPreferences.setString(EMAIL, email ?? ''));
     waitList.add(_sharedPreferences.setString(MOBILE, mobile ?? ''));
-    waitList.add(_sharedPreferences.setString(STATUS, status??''));
+    waitList.add(_sharedPreferences.setString(STATUS, status ?? ''));
 
     // waitList.add(_sharedPreferences.setString(CITY, city ?? ''));
     // waitList.add(_sharedPreferences.setString(AREA, area ?? ''));
@@ -116,10 +117,10 @@ class SettingProvider {
     userProvider.setLastName(firstname ?? '');
     userProvider.setFirstName(lastname ?? '');
     userProvider.setAccessToken(accesstoken ?? '');
-    userProvider.setRefreshToken(refreshtoken ??'');
+    userProvider.setRefreshToken(refreshtoken ?? '');
     userProvider.setBalance('');
     userProvider.setCartCount('');
-    userProvider.setStatus(status ??'');
+    userProvider.setStatus(status ?? '');
     userProvider.setMobile(mobile ?? '');
     userProvider.setProfilePic(image ?? '');
     userProvider.setEmail(email ?? '');
