@@ -1,4 +1,3 @@
-
 import 'package:agritungotest/Helper/Session.dart';
 import 'package:agritungotest/Provider/CartProvider.dart';
 import 'package:agritungotest/Provider/SettingProvider.dart';
@@ -25,13 +24,18 @@ import 'Helper/Demo_Localization.dart';
 import 'Helper/PushNotificationService.dart';
 import 'Helper/String.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:path_provider/path_provider.dart' as path;
 
 import 'Provider/FavoriteProvider.dart';
 import 'Provider/HomeProvider.dart';
 import 'Provider/ProductDetailProvider.dart';
 
-void main() async{
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  final appPath = await path.getApplicationDocumentsDirectory();
+  // Hive.init(appPath.path);
+  // Hive.registerAdapter(ProductHiveAdapter());
+  // await Hive.openBox<ProductHive>(cartbox);
   await Firebase.initializeApp();
   FirebaseMessaging.instance.getInitialMessage();
   initializedDownload();
@@ -44,24 +48,26 @@ void main() async{
   runApp(
     ChangeNotifierProvider<ThemeNotifier>(
       create: (BuildContext context) {
-     String? theme = prefs.getString(APP_THEME);
-     if (theme == DARK) {
-       ISDARK = 'true';
-     } else if (theme == LIGHT) {
-       ISDARK = 'false';
-     }
+        String? theme = prefs.getString(APP_THEME);
+        if (theme == DARK) {
+          ISDARK = 'true';
+        } else if (theme == LIGHT) {
+          ISDARK = 'false';
+        }
 
-     if (theme == null || theme == '' || theme == DEFAULT_SYSTEM) {
-       prefs.setString(APP_THEME, DEFAULT_SYSTEM);
-       var brightness = SchedulerBinding.instance.window.platformBrightness;
-       ISDARK = (brightness == Brightness.dark).toString();
+        if (theme == null || theme == '' || theme == DEFAULT_SYSTEM) {
+          prefs.setString(APP_THEME, DEFAULT_SYSTEM);
+          var brightness = SchedulerBinding.instance.window.platformBrightness;
+          ISDARK = (brightness == Brightness.dark).toString();
 
-       return ThemeNotifier(ThemeMode.system);
-     }
+          return ThemeNotifier(ThemeMode.system);
+        }
 
-     return ThemeNotifier(theme == LIGHT ? ThemeMode.light : ThemeMode.dark);
+        return ThemeNotifier(theme == LIGHT ? ThemeMode.light : ThemeMode.dark);
       },
-      child: MyApp(sharedPreferences: prefs,),
+      child: MyApp(
+        sharedPreferences: prefs,
+      ),
     ),
   );
 }
@@ -71,7 +77,7 @@ Future<void> initializedDownload() async {
 }
 
 final GlobalKey<ScaffoldMessengerState> rootScaffoldMessengerKey =
-GlobalKey<ScaffoldMessengerState>();
+    GlobalKey<ScaffoldMessengerState>();
 
 class MyApp extends StatefulWidget {
   late SharedPreferences sharedPreferences;
@@ -92,19 +98,20 @@ class _MyAppState extends State<MyApp> {
   setLocale(Locale locale) {
     if (mounted) {
       setState(
-            () {
+        () {
           _locale = locale;
         },
       );
     }
   }
+
   @override
   void didChangeDependencies() {
     getLocale().then(
-          (locale) {
+      (locale) {
         if (mounted) {
           setState(
-                () {
+            () {
               _locale = locale;
             },
           );
@@ -113,6 +120,7 @@ class _MyAppState extends State<MyApp> {
     );
     super.didChangeDependencies();
   }
+
   @override
   Widget build(BuildContext context) {
     final themeNotifier = Provider.of<ThemeNotifier>(context);
@@ -124,19 +132,19 @@ class _MyAppState extends State<MyApp> {
           ),
         ),
       );
-    }else{
-    return MultiProvider(
+    } else {
+      return MultiProvider(
         providers: [
-      Provider<SettingProvider>(
-        create: (context) => SettingProvider(widget.sharedPreferences),
-      ),
-      ChangeNotifierProvider<UserProvider>(
-          create: (context) => UserProvider()),
-      ChangeNotifierProvider<HomeProvider>(
+          Provider<SettingProvider>(
+            create: (context) => SettingProvider(widget.sharedPreferences),
+          ),
+          ChangeNotifierProvider<UserProvider>(
+              create: (context) => UserProvider()),
+          ChangeNotifierProvider<HomeProvider>(
               create: (context) => HomeProvider()),
           ChangeNotifierProvider<WeatherProvider>(
               create: (context) => WeatherProvider()),
-      ChangeNotifierProvider<ShopProvider>(
+          ChangeNotifierProvider<ShopProvider>(
               create: (context) => ShopProvider()),
           ChangeNotifierProvider<ProductDetailProvider>(
               create: (context) => ProductDetailProvider()),
@@ -144,138 +152,160 @@ class _MyAppState extends State<MyApp> {
               create: (context) => FavoriteProvider()),
           ChangeNotifierProvider<CartProvider>(
               create: (context) => CartProvider()),
-    ],
-    child: MaterialApp(
-      //scaffoldMessengerKey: rootScaffoldMessengerKey,
-      locale: _locale,
-      supportedLocales: const [
-        Locale('en', 'US'),
-        Locale('zh', 'CN'),
-        Locale('es', 'ES'),
-        Locale('hi', 'IN'),
-        Locale('fr', 'FR'),
-        Locale('ar', 'DZ'),
-        Locale('ru', 'RU'),
-        Locale('ja', 'JP'),
-        Locale('de', 'DE')
-      ],
-      localizationsDelegates:  const [
-        CountryLocalizations.delegate,
-        DemoLocalization.delegate,
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-      ],
-      localeResolutionCallback: (locale, supportedLocales) {
-        for (var supportedLocale in supportedLocales) {
-          if (supportedLocale.languageCode == locale!.languageCode &&
-              supportedLocale.countryCode == locale.countryCode) {
-            return supportedLocale;
-          }
-        }
-        return supportedLocales.first;
-      },
-      title: appName,
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSwatch(
-          primarySwatch: colors.primary_app,
-        ).copyWith(
-          secondary: colors.darkIcon,
-          brightness: Brightness.light,
+        ],
+        child: MaterialApp(
+          //scaffoldMessengerKey: rootScaffoldMessengerKey,
+          locale: _locale,
+          supportedLocales: const [
+            Locale('en', 'US'),
+            Locale('zh', 'CN'),
+            Locale('es', 'ES'),
+            Locale('hi', 'IN'),
+            Locale('fr', 'FR'),
+            Locale('ar', 'DZ'),
+            Locale('ru', 'RU'),
+            Locale('ja', 'JP'),
+            Locale('de', 'DE')
+          ],
+          localizationsDelegates: const [
+            CountryLocalizations.delegate,
+            DemoLocalization.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          localeResolutionCallback: (locale, supportedLocales) {
+            for (var supportedLocale in supportedLocales) {
+              if (supportedLocale.languageCode == locale!.languageCode &&
+                  supportedLocale.countryCode == locale.countryCode) {
+                return supportedLocale;
+              }
+            }
+            return supportedLocales.first;
+          },
+          title: appName,
+          theme: ThemeData(
+            colorScheme: ColorScheme.fromSwatch(
+              primarySwatch: colors.primary_app,
+            ).copyWith(
+              secondary: colors.darkIcon,
+              brightness: Brightness.light,
+            ),
+            canvasColor: Theme.of(context).colorScheme.lightWhite,
+            cardColor: Theme.of(context).colorScheme.white,
+            dialogBackgroundColor: Theme.of(context).colorScheme.white,
+            iconTheme:
+                Theme.of(context).iconTheme.copyWith(color: colors.primary),
+            primarySwatch: colors.primary_app,
+            primaryColor: Theme.of(context).colorScheme.lightWhite,
+            fontFamily: 'opensans',
+            brightness: Brightness.light,
+            textTheme: TextTheme(
+              headline6: TextStyle(
+                color: Theme.of(context).colorScheme.fontColor,
+                fontWeight: FontWeight.w600,
+              ),
+              subtitle1: TextStyle(
+                color: Theme.of(context).colorScheme.fontColor,
+                fontWeight: FontWeight.bold,
+              ),
+            ).apply(
+              bodyColor: Theme.of(context).colorScheme.fontColor,
+            ),
+          ),
+          debugShowCheckedModeBanner: false,
+          initialRoute: '/',
+          routes: {
+            '/': (context) => const Splash(),
+            '/home': (context) => const Dashboard(),
+          },
+          darkTheme: ThemeData(
+            canvasColor: colors.darkColor,
+            cardColor: colors.darkColor2,
+            dialogBackgroundColor: colors.darkColor2,
+            primaryColor: colors.darkColor,
+            textSelectionTheme: TextSelectionThemeData(
+              cursorColor: colors.darkIcon,
+              selectionColor: colors.darkIcon,
+              selectionHandleColor: colors.darkIcon,
+            ),
+            fontFamily: 'ubuntu',
+            brightness: Brightness.dark,
+            hintColor: colors.white10,
+            iconTheme:
+                Theme.of(context).iconTheme.copyWith(color: colors.secondary),
+            textTheme: TextTheme(
+              headline6: TextStyle(
+                color: Theme.of(context).colorScheme.fontColor,
+                fontWeight: FontWeight.w600,
+              ),
+              subtitle1: TextStyle(
+                color: Theme.of(context).colorScheme.fontColor,
+                fontWeight: FontWeight.bold,
+              ),
+            ).apply(bodyColor: Theme.of(context).colorScheme.fontColor),
+            colorScheme:
+                ColorScheme.fromSwatch(primarySwatch: colors.primary_app)
+                    .copyWith(
+                        secondary: colors.darkIcon,
+                        brightness: Brightness.dark),
+            checkboxTheme: CheckboxThemeData(
+              fillColor: MaterialStateProperty.resolveWith<Color?>(
+                  (Set<MaterialState> states) {
+                if (states.contains(MaterialState.disabled)) {
+                  return null;
+                }
+                if (states.contains(MaterialState.selected)) {
+                  return colors.primary;
+                }
+                return null;
+              }),
+            ),
+            radioTheme: RadioThemeData(
+              fillColor: MaterialStateProperty.resolveWith<Color?>(
+                  (Set<MaterialState> states) {
+                if (states.contains(MaterialState.disabled)) {
+                  return null;
+                }
+                if (states.contains(MaterialState.selected)) {
+                  return colors.primary;
+                }
+                return null;
+              }),
+            ),
+            switchTheme: SwitchThemeData(
+              thumbColor: MaterialStateProperty.resolveWith<Color?>(
+                  (Set<MaterialState> states) {
+                if (states.contains(MaterialState.disabled)) {
+                  return null;
+                }
+                if (states.contains(MaterialState.selected)) {
+                  return colors.primary;
+                }
+                return null;
+              }),
+              trackColor: MaterialStateProperty.resolveWith<Color?>(
+                  (Set<MaterialState> states) {
+                if (states.contains(MaterialState.disabled)) {
+                  return null;
+                }
+                if (states.contains(MaterialState.selected)) {
+                  return colors.primary;
+                }
+                return null;
+              }),
+            ),
+          ),
+          themeMode: themeNotifier.getThemeMode(),
         ),
-        canvasColor: Theme.of(context).colorScheme.lightWhite,
-        cardColor: Theme.of(context).colorScheme.white,
-        dialogBackgroundColor: Theme.of(context).colorScheme.white,
-        iconTheme:
-        Theme.of(context).iconTheme.copyWith(color: colors.primary),
-        primarySwatch: colors.primary_app,
-        primaryColor: Theme.of(context).colorScheme.lightWhite,
-        fontFamily: 'opensans',
-        brightness: Brightness.light,
-        textTheme: TextTheme(
-          headline6: TextStyle(
-            color: Theme.of(context).colorScheme.fontColor,
-            fontWeight: FontWeight.w600,
-          ),
-          subtitle1: TextStyle(
-            color: Theme.of(context).colorScheme.fontColor,
-            fontWeight: FontWeight.bold,
-          ),
-        ).apply(
-          bodyColor: Theme.of(context).colorScheme.fontColor,
-        ),
-      ),
-      debugShowCheckedModeBanner: false,
-      initialRoute: '/',
-      routes: {
-        '/': (context) => const Splash(),
-        '/home': (context) => const Dashboard(),
-      },
-      darkTheme: ThemeData(
-        canvasColor: colors.darkColor,
-        cardColor: colors.darkColor2,
-        dialogBackgroundColor: colors.darkColor2,
-        primaryColor: colors.darkColor,
-        textSelectionTheme: TextSelectionThemeData(
-          cursorColor: colors.darkIcon,
-          selectionColor: colors.darkIcon,
-          selectionHandleColor: colors.darkIcon,
-        ),
-        fontFamily: 'ubuntu',
-        brightness: Brightness.dark,
-        hintColor: colors.white10,
-        iconTheme:
-        Theme.of(context).iconTheme.copyWith(color: colors.secondary),
-        textTheme: TextTheme(
-          headline6: TextStyle(
-            color: Theme.of(context).colorScheme.fontColor,
-            fontWeight: FontWeight.w600,
-          ),
-          subtitle1: TextStyle(
-            color: Theme.of(context).colorScheme.fontColor,
-            fontWeight: FontWeight.bold,
-          ),
-        ).apply(bodyColor: Theme.of(context).colorScheme.fontColor),
-        colorScheme:
-        ColorScheme.fromSwatch(primarySwatch: colors.primary_app)
-            .copyWith(
-            secondary: colors.darkIcon,
-            brightness: Brightness.dark), checkboxTheme: CheckboxThemeData(
-        fillColor: MaterialStateProperty.resolveWith<Color?>((Set<MaterialState> states) {
-          if (states.contains(MaterialState.disabled)) { return null; }
-          if (states.contains(MaterialState.selected)) { return colors.primary; }
-          return null;
-        }),
-      ), radioTheme: RadioThemeData(
-        fillColor: MaterialStateProperty.resolveWith<Color?>((Set<MaterialState> states) {
-          if (states.contains(MaterialState.disabled)) { return null; }
-          if (states.contains(MaterialState.selected)) { return colors.primary; }
-          return null;
-        }),
-      ), switchTheme: SwitchThemeData(
-        thumbColor: MaterialStateProperty.resolveWith<Color?>((Set<MaterialState> states) {
-          if (states.contains(MaterialState.disabled)) { return null; }
-          if (states.contains(MaterialState.selected)) { return colors.primary; }
-          return null;
-        }),
-        trackColor: MaterialStateProperty.resolveWith<Color?>((Set<MaterialState> states) {
-          if (states.contains(MaterialState.disabled)) { return null; }
-          if (states.contains(MaterialState.selected)) { return colors.primary; }
-          return null;
-        }),
-      ),
-      ),
-      themeMode: themeNotifier.getThemeMode(),
-    ),
-    );
+      );
     }
 
-    return const MaterialApp(
-      title: 'Material App',
-      home: Dashboard(),
-    );
+    // return const MaterialApp(
+    //   title: 'Material App',
+    //   home: Dashboard(),
+    // );
   }
-
 }
 
 // class MyHttpOverrides extends HttpOverrides {

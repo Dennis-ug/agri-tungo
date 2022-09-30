@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+ import 'package:flutter/material.dart';
 
 class HomeProvider extends ChangeNotifier {
   int _curSlider = 0;
@@ -56,9 +56,9 @@ class HomeProvider extends ChangeNotifier {
 
   setAppBarOffsetToAnimateController(AnimationController animationController) {
     _animationAppBarOffset = Tween<Offset>(
-        end: const Offset(0.0, -1.25), begin: Offset.zero)
+            end: const Offset(0.0, -1.25), begin: Offset.zero)
         .animate(
-        CurvedAnimation(parent: animationController, curve: Curves.easeIn));
+            CurvedAnimation(parent: animationController, curve: Curves.easeIn));
     notifyListeners();
   }
 
@@ -86,6 +86,7 @@ class HomeProvider extends ChangeNotifier {
     _sellerLoading = loading;
     notifyListeners();
   }
+
   setMilkCollectionLoading(bool loading) {
     _milkcollectionLoading = loading;
     notifyListeners();

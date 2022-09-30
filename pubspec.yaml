@@ -9,7 +9,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 #version: 1.0.0+1
 
 environment:
-  sdk: '>=2.19.0-96.0.dev <3.0.0'
+  sdk: '>=2.18.2-96.0.dev <3.0.0'
 
 dependencies:
   flutter:
@@ -83,6 +83,9 @@ dependencies:
   flutter_stripe: ^3.0.2
   cupertino_icons: ^1.0.4
   firebase_core: ^1.21.1
+  get: ^4.6.5
+  hive_flutter: ^1.1.0
+  dotted_border: ^2.0.0+2
 dev_dependencies:
   flutter_test:
     sdk: flutter

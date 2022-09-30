@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../commerce/screens/home/home.dart';
+
 class Shop extends StatefulWidget {
   const Shop({Key? key}) : super(key: key);
 
@@ -9,14 +11,8 @@ class Shop extends StatefulWidget {
 }
 
 class _ShopState extends State<Shop> with TickerProviderStateMixin {
-
-
-
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-    );
+    return Home();
   }
-
-
 }
